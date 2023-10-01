@@ -44,3 +44,7 @@ function updateJob(jobId, progress){
     }, 3000);
 }
 
+/*We can fetch this in the console side of a browser to check the 6 connection restriction on chrome side for a domain
+ - fetch("http://localhost:8080/submit", {"method":"POST"}).then(a=> a.text()).then(console.log)
+ - fetch("http://localhost:8080/checkjob?jobId:", {"method":"GET"}).then(a=> a.text()).then(console.log)
+ */
