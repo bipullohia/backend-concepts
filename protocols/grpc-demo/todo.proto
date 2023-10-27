@@ -1,0 +1,37 @@
+/*
+    This protobuf code defines a service named "Todo" with two RPCs for creating and reading todo items. 
+    It also defines message types for representing individual todo items and a list of todo items. 
+    This code can be used to generate client and server code in various programming languages for communication and data serialization in a distributed system.
+*/
+
+//This line specifies that the code is using Protocol Buffers version 3 syntax.
+syntax = "proto3";
+
+//This line defines a package for organizing related message and service definitions. It's similar to a namespace in programming languages and helps avoid naming conflicts
+package todoPackage;
+
+/*  This block defines a service named "Todo." 
+    Services in protobuf define remote procedure calls (RPCs) that can be used to perform actions or operations. 
+    In this case, the "Todo" service has two RPCs: createTodo and readTodos
+*/
+service Todo{
+    //This RPC, named createTodo, takes a TodoItem as a parameter and returns a TodoItem. It's used for creating a new todo item
+    rpc createTodo(TodoItem) returns (TodoItem);
+    //This RPC, named readTodos, takes no parameters (indicated by void) and returns a TodoItems message. It's used for reading a list of todo items
+    rpc readTodos(empty) returns (TodoItems);
+    //This RPC will send a stream of the object
+    rpc readTodosStream(empty) returns (stream TodoItem);
+}
+
+//This defines an empty message named void. In protobuf, messages are used to define structured data. This empty message can be used as a placeholder or to indicate the absence of data.
+message empty{}
+
+// This block defines a message type named TodoItem. Messages are like data structures and can contain fields with different data types. In this case, a TodoItem has two fields
+message TodoItem{
+    int32 id = 1; //This defines an integer field named id with a field number of 1
+    string text = 2; //This defines a string field named text with a field number of 2
+}
+
+message TodoItems{
+    repeated TodoItem items = 1; //This field is marked as "repeated," indicating that it represents a repeated or list of TodoItem elements. It is named "items" and has a field number of 1.
+}
