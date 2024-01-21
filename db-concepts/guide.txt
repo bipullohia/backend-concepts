@@ -1,0 +1,48 @@
+This is a guide on what is being done in this folder when it comes to docker and postgres and script files
+
+Pulling postgres image from docker
+'docker pull postgres:latest'
+Pulling pgadmin image from docker
+'docker pull dpage/pgadmin4'
+
+1. We are creating a init.sql file to tell postgres we want to create a table
+2. We insert instructions in the Dockerfile to tell docker to load this file in the docker image called 'postgres'
+3. Creating the docker image - the dot(.) is important since it tell docker to run the files present in the entry point
+    Command: 'docker build -t pgshard .'
+    pgshard is the name of the image
+
+4. The docker image of postgres (named pgshard) is now created.
+5. From the above image, now we create containers using the command below:
+    pgshard is the name of our image. pgshard1 is the name of this container we are creating (we can create multiple containers using a single image)
+    
+    'docker run --name pgshard1 -p 5432:5432 -e POSTGRES_PASSWORD=password -d pgshard'
+    'docker run --name pgshard2 -p 5433:5432 -e POSTGRES_PASSWORD=password -d pgshard'
+    'docker run --name pgshard3 -p 5434:5432 -e POSTGRES_PASSWORD=password -d pgshard'
+
+    Here's the reminder of what the above command really means (copied from ChatGPT):
+    
+    -p 5434:5432: This option specifies port mapping. In this case, it maps port 5434 on the host to port 5432 on the container. 
+        This means that if you want to connect to the PostgreSQL database running inside the container, you would use port 5434 on the host machine.
+    
+    --name pgshard1: This option provides a custom name for the container, setting it as "pgshard1". Naming containers can be helpful for easier identification and management.
+    
+    -d: This option runs the container in detached mode, allowing it to run in the background independently of the terminal.
+    
+    pgshard: This is the name of the Docker image to be used for creating the container. Docker will look for an image named "pgshard" locally, and if it doesn't find it, 
+        it will attempt to pull it from a Docker registry (like Docker Hub) unless the image is specified with a registry prefix (e.g., docker.io/pgshard).
+
+6. run the command 'docker ps' to check all the containers
+
+7. Now we need to build our container for pgadmin (we have already pulled the image). Execute this to run the container of pgadmin4
+    'docker run --name pgadmin-container -p 5555:80 -e PGADMIN_DEFAULT_EMAIL=bipul@bipullohia.com -e PGADMIN_DEFAULT_PASSWORD=password -d dpage/pgadmin4'
+
+8. We can now login to our pgadmin4 via 'http://localhost:5555/'. We need to give the email and password we gave during container creation and we will be logged in!
+9. We can now register our servers (create) in pgadmin4. We can give any name, but we need to provide proper IP address. Username is by default postgres and password is whatever we set!   
+    We can check ip with this command: docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sqltutorial
+    We need to use the port 5432 while connecting!
+
+10. We are now connected to the postgres servers we created.
+11. We can also SSH into the postgres container by 'docker exec -it pgshard1 psql -U postgres'
+
+------------------------------
+We can now continue with our backend code -> we can use the library 'pg' tp interact with our postgres db
