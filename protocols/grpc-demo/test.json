@@ -1,0 +1,4 @@
+{
+    "type": "offer",
+    "sdp": "v=0\r\no=- 900357923 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 044\r\n"
+}
